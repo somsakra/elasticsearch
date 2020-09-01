@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  elasticsearch:
+    image: 'elasticsearch:7.8.1'
+    
+    container_name: 'elasticsearch'
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - type: bind
+        source: ./elasticsearch-volume
+        target: /usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - default
+networks:
+  default:
+    external: 
+      name: elk

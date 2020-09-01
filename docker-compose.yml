@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+  es01:
+    image: 'elasticsearch:7.8.1'
+    container_name: 'es01'
+    environment:
+      - node.name=es01
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es02,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+    volumes:
+      - type: bind
+        source: ./es01-volume
+        target: /usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - default
+  es02:
+    image: 'elasticsearch:7.8.1'
+    container_name: 'es02'
+    environment:
+      - node.name=es02
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01,es03
+      - cluster.initial_master_nodes=es01,es02,es03
+    volumes:
+      - type: bind
+        source: ./es02-volume
+        target: /usr/share/elasticsearch/data
+    networks:
+      - default
+  es03:
+    image: 'elasticsearch:7.8.1'
+    container_name: 'es03'
+    environment:
+      - node.name=es03
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es01,es02
+      - cluster.initial_master_nodes=es01,es02,es03
+    volumes:
+      - type: bind
+        source: ./es03-volume
+        target: /usr/share/elasticsearch/data
+    networks:
+      - default
+networks:
+  default:
+    external: 
+      name: elk
